@@ -60,15 +60,24 @@ from scipy import stats
 # plt.tight_layout()
 # plt.savefig('/data/focus_sims/ciber_data/fits_images/all_fits_images.png')
 
-''' ############ Histogram for one image ###############'''
 
-image_file = get_pkg_data_filename('/data/focus_sims/ciber_data/fits_files/subgrid_stamp_12.FITS')
-image_data = fits.getdata(image_file, ext=0) #stores data as 2D array
-image_data_int = image_data.astype(int)
+'''
+Here I am testing code with multiple images cutting a row from the xaxis and plot it with a Gaussian filter
+'''
+files = glob.glob('/data/focus_sims/ciber_data/fits_files')
+image_hdus = []
 
-NBINS = 1000
-plt.figure()
-plt.hist(image_data.flatten(), NBINS)
-plt.xlim([0, 2.5])
-# plt.colorbar()
-plt.savefig('fits_plots/hist_stamp_12.png')
+for f in range(5):
+    og_im = fits.open('/data/focus_sims/ciber_data/fits_files/subgrid_stamp_%.2d.FITS' % int(f+11))
+    image_hdus.append(og_im[0].data)
+    image_data_filt = gaussian_filter(og_im[0].data, 5)
+    result = np.where(image_data_filt == np.amax(image_data_filt)) #returns indices
+    #print(image_data_filt[:,result[0]]) #lists of lists
+    plt.figure()
+    plt.imshow(image_data_filt, cmap='gray')
+    x_data = image_data_filt[:,result[0]]
+    plt.plot(x_data)
+    plt.gca().invert_yaxis()
+    plt.colorbar()
+    plt.axhline(y=result[0], color='r', linestyle='-')
+    plt.savefig('/data/focus_sims/ciber_data/fits_plots/guassian_subgrid_%.2d.png' % int(f+11))
