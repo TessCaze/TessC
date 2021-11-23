@@ -26,7 +26,6 @@ Step 4: find brightest pixel in each images
 Step 5: put a red line where the x data points
 Step 6: cut the array out of images
 Step 7: plot the data
-
 Step 8: fit a gaussian
 Step 9: print results of data parameters
 Step 11:Print results of data parameters
@@ -53,17 +52,20 @@ x_array = np.arange(len(x_data)) #numbers from 0 to 327
 def gaussian_func(x, amp , mean, std):
     return amp*np.exp(-(x-mean)**2/(2*std**2))
 
-popt, pcov = curve_fit(gaussian_func, ylist, x_array)
+popt, pcov = curve_fit(gaussian_func, x_array, ylist)
 
 
 plt.figure()
 plt.plot(x_array, ylist, 'go', markersize = 4, label = 'Image data')
 plt.plot(x_array, gaussian_func(x_array, popt[0], popt[1], popt[2]), 'b', label='Best fit')
 plt.legend()
-statistics.stdev(sample)
+# statistics.stdev(sample)
 
-plt.savefig('/data/focus_sims/ciber_data/fits_plots/testing.png') #%.2d.png' % int(f+11))
+plt.savefig('/home/time_user/TessC/fits_plots/testing.png') #%.2d.png' % int(f+11))
 
+print("amplitude = ", round(popt[0],2))
+print("mean = ", round(popt[1],2))
+print("std = ", round(popt[2],2))
 # Let's create a function to model and create data
 # def guassian_func(x, amp , mean, std):
 #     return a*np.exp(-(x-mu)**2/(2*sigma**2))
