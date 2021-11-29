@@ -28,6 +28,7 @@ Step 6: cut the array out of images
 Step 7: plot the data
 Step 8: fit a gaussian
 Step 9: print results of data parameters
+
 Step 10: make an array of the results
 Step 11: Plot the results
 Step 10:Find the best fit curve image.
@@ -41,7 +42,7 @@ files = glob.glob('/data/focus_sims/ciber_data/fits_files')
 image_hdus = []
 
 # for f in range(5):
-og_im = fits.open('/data/focus_sims/ciber_data/fits_files/subgrid_stamp_11.FITS') #%.2d.FITS' % int(f+11))
+og_im = fits.open('/data/focus_sims/ciber_data/fits_files/subgrid_stamp_14.FITS') #%.2d.FITS' % int(f+11))
 image_hdus.append(og_im[0].data)
 image_data_filt = gaussian_filter(og_im[0].data, 5)
 result = np.where(image_data_filt == np.amax(image_data_filt)) #returns indices
@@ -49,10 +50,12 @@ x_data = image_data_filt[:,result[0]] #result[0] is the single y data point
 ylist = [item for sublist in x_data for item in sublist] #flattens lists to one list
 x_array = np.arange(len(x_data)) #numbers from 0 to 327
 
+
+
 def gaussian_func(x, amp , mean, std):
     return amp*np.exp(-(x-mean)**2/(2*std**2))
 
-popt, pcov = curve_fit(gaussian_func, x_array, ylist)
+popt, pcov = curve_fit(gaussian_func, x_array, ylist, p0 = [max(ylist), np.mean(ylist), np.std(ylist)])
 
 
 plt.figure()
@@ -61,15 +64,22 @@ plt.plot(x_array, gaussian_func(x_array, popt[0], popt[1], popt[2]), 'b', label=
 plt.legend()
 # statistics.stdev(sample)
 
-plt.savefig('/home/time_user/TessC/fits_plots/testing.png') #%.2d.png' % int(f+11))
+plt.savefig('/home/time_user/TessC/fits_plots/testing_stamp_14.png') #%.2d.png' % int(f+11))
 
+print("by curve_fit:")
 print("amplitude = ", round(popt[0],2))
 print("mean = ", round(popt[1],2))
 print("std = ", round(popt[2],2))
 
+print("by hand:")
+print("amp = ", round(max(ylist),2))
+print("mean = ", round(np.mean(ylist),2))
+print("std = ", round(np.std(ylist),2))
+
+
 '''
 Here I am testing code with blob images fitting a Gaussian function in each
-# '''
+'''
 # files = glob.glob('/data/focus_sims/ciber_data/fits_files')
 # image_hdus = []
 #
