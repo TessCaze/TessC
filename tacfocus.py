@@ -90,44 +90,44 @@ This Code takes a horizontal cut out of the fits images and plots it fitting a g
 #     print("amplitude = ", round(popt[0],2))
 #     print("mean = ", round(popt[1],2))
 #     print("std = ", round(popt[2],2))
-#
+# 
 #     plt.savefig('/home/time_user/TessC/fits_plots/Gauss_plot_stamp_%.2d.png' % int(f+11))
 
 '''
 Here I am testing code with blob images fitting a Gaussian function in each
 '''
-files = glob.glob('/data/focus_sims/ciber_data/fits_files')
-image_hdus = []
-
-def gaussian_func(x, amp , mean, std):
-    return amp*np.exp(-(x-mean)**2/(2*std**2))
-
-for f in range(5):
-    og_im = fits.open('/data/focus_sims/ciber_data/fits_files/subgrid_stamp_%.2d.FITS' % int(f+11))
-    image_hdus.append(og_im[0].data)
-    image_data_filt = gaussian_filter(og_im[0].data, 5)
-    result = np.where(image_data_filt == np.amax(image_data_filt)) #returns indices
-    x_data = image_data_filt[:,result[0]] #result[0] is the single y data point
-    ylist = [item for sublist in x_data for item in sublist] #flattens lists to one list
-    x_array = np.arange(len(x_data)) #numbers from 0 to 327
-
-    popt, pcov = curve_fit(gaussian_func, x_array, ylist, p0 = [max(ylist), np.mean(ylist), np.std(ylist)])
-
-    plt.figure()
-    plt.plot(x_array, ylist, 'go', markersize = 4, label = 'Image data')
-    plt.plot(x_array, gaussian_func(x_array, popt[0], popt[1], popt[2]), 'b', label='Best fit')
-    plt.legend()
-    # statistics.stdev(sample)
-    print("For subgrid_stamp_%.2d.png the Statistics are:" % int(f+11))
-
-    print("by curve_fit:")
-    print("amplitude = ", round(popt[0],2))
-    print("mean = ", round(popt[1],2))
-    print("std = ", round(popt[2],2))
-
-    print("by hand:")
-    print("amp = ", round(max(ylist),2))
-    print("mean = ", round(np.mean(ylist),2))
-    print("std = ", round(np.std(ylist),2))
-
-    plt.savefig('/home/time_user/TessC/fits_plots/Gauss_plot_stamp_%.2d.png' % int(f+11))
+# files = glob.glob('/data/focus_sims/ciber_data/fits_files')
+# image_hdus = []
+#
+# def gaussian_func(x, amp , mean, std):
+#     return amp*np.exp(-(x-mean)**2/(2*std**2))
+#
+# for f in range(5):
+#     og_im = fits.open('/data/focus_sims/ciber_data/fits_files/subgrid_stamp_%.2d.FITS' % int(f+11))
+#     image_hdus.append(og_im[0].data)
+#     image_data_filt = gaussian_filter(og_im[0].data, 5)
+#     result = np.where(image_data_filt == np.amax(image_data_filt)) #returns indices
+#     x_data = image_data_filt[:,result[0]] #result[0] is the single y data point
+#     ylist = [item for sublist in x_data for item in sublist] #flattens lists to one list
+#     x_array = np.arange(len(x_data)) #numbers from 0 to 327
+#
+#     popt, pcov = curve_fit(gaussian_func, x_array, ylist, p0 = [max(ylist), np.mean(ylist), np.std(ylist)])
+#
+#     plt.figure()
+#     plt.plot(x_array, ylist, 'go', markersize = 4, label = 'Image data')
+#     plt.plot(x_array, gaussian_func(x_array, popt[0], popt[1], popt[2]), 'b', label='Best fit')
+#     plt.legend()
+#     # statistics.stdev(sample)
+#     print("For subgrid_stamp_%.2d.png the Statistics are:" % int(f+11))
+#
+#     print("by curve_fit:")
+#     print("amplitude = ", round(popt[0],2))
+#     print("mean = ", round(popt[1],2))
+#     print("std = ", round(popt[2],2))
+#
+#     print("by hand:")
+#     print("amp = ", round(max(ylist),2))
+#     print("mean = ", round(np.mean(ylist),2))
+#     print("std = ", round(np.std(ylist),2))
+#
+#     plt.savefig('/home/time_user/TessC/fits_plots/Gauss_plot_stamp_%.2d.png' % int(f+11))
