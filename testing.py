@@ -53,15 +53,17 @@ image_hdus = []
 og_im = fits.open('/data/focus_sims/ciber_data/fits_files/subgrid_stamp_15.FITS')
 image_hdus.append(og_im[0].data)
 image_data_filt = gaussian_filter(og_im[0].data, 5)
-image_data_transpose = np.transpose(image_data_filt)
-result = np.where(image_data_transpose == np.amax(image_data_transpose)) #returns indices
-x_data = image_data_transpose[:,result[0]] #result[0] is the single y data point
+#image_data_transpose = np.transpose(image_data_filt)
+result = np.where(image_data_filt == np.amax(image_data_filt)) #returns indices
+print(result) #x and y coords of max
+x_data = image_data_filt[:,result[1]]
+y_data = image_data_filt[result[0],:] #result[0]
 #ax = fig.add_subplot(rows, columns, f+1)
 #ax.set_title('subgrid_stamp_%.2d' % int(f+4))
 plt.figure()
-plt.axvline(x=result[0], color="r")
-plt.imshow(og_im[0].data, cmap='gray')
-plt.gca().invert_yaxis()
+plt.axvline(x=result[1], color="r")
+plt.axhline(y=result[0], color="b")
+plt.imshow(og_im[0].data, cmap='gray', origin = 'lower')
 plt.colorbar()
 #plt.tight_layout()
 plt.savefig('/home/time_user/TessC/fits_images/data_slice_check.png')
