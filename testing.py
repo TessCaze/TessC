@@ -38,7 +38,7 @@ Step 16:Find the best fit curve image.
 '''
 
 '''
-Here I am checking where the data is being cut from the image (Vertical cut)
+Here I am checking where the data is being cut from the image (Vertical cut & Horizontal cut)
 '''
 
 files = glob.glob('/data/focus_sims/ciber_data/fits_files')
