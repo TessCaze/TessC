@@ -10,19 +10,19 @@ import glob
 from scipy.ndimage import gaussian_filter
 from scipy.optimize import curve_fit
 
-#fits.info(image_file)
-#print(type(image_data))
-#print(fits.info(image_file))
-#print(image_data.shape) #Shape of ciber files are is 328 by 328
+
 
 ''' ############ Displays only one FITS image ###############'''
 # image_file = get_pkg_data_filename('/data/focus_sims/ciber_data/fits_files/subgrid_stamp_04.FITS')
+#
 # image_data = fits.getdata(image_file, ext=0) #stores data as 2D array
 # image_data_int = image_data.astype(int)
-#
+# print(type(image_data))
+# print(fits.info(image_file))
+# print(image_data.shape) #Shape of ciber files are is 328 by 328
+
 # plt.figure()
 # plt.imshow(image_data, cmap='gray')
-# plt.gca().invert_yaxis()
 # plt.colorbar()
 # plt.savefig('fits_images/fits_image_1.png')
 
@@ -64,45 +64,45 @@ from scipy.optimize import curve_fit
 '''
 Here I am testing code with blob images fitting a Gaussian function in each
 '''
-files = glob.glob('/data/focus_sims/ciber_data/fits_files')
-image_hdus = []
+# files = glob.glob('/data/focus_sims/ciber_data/fits_files')
+# image_hdus = []
+#
+# def gaussian_func(x, amp , mean, std):
+#     return amp*np.exp(-(x-mean)**2/(2*std**2))
+#
+# for f in range(5):
+#     og_im = fits.open('/data/focus_sims/ciber_data/fits_files/subgrid_stamp_%.2d.FITS' % int(f+11))
+#     image_hdus.append(og_im[0].data)
+#     image_data_filt = gaussian_filter(og_im[0].data, 5)
+#     result = np.where(image_data_filt == np.amax(image_data_filt)) #returns indices
+#     x_data = image_data_filt[:,result[0]] #result[0] is the single y data point
+#     ylist = [item for sublist in x_data for item in sublist] #flattens lists to one list
+#     x_array = np.arange(len(x_data)) #numbers from 0 to 327
+#
+#     popt, pcov = curve_fit(gaussian_func, x_array, ylist, p0 = [max(ylist), np.mean(ylist), np.std(ylist)])
+#
+#     plt.figure()
+#     plt.plot(x_array, ylist, 'go', markersize = 4, label = 'Image data')
+#     plt.plot(x_array, gaussian_func(x_array, popt[0], popt[1], popt[2]), 'b', label='Best fit')
+#     plt.legend()
+#     # statistics.stdev(sample)
+#     print("For subgrid_stamp_%.2d.png the Statistics are:" % int(f+11))
+#
+#     print("by curve_fit:")
+#     print("amplitude = ", round(popt[0],2))
+#     print("mean = ", round(popt[1],2))
+#     print("std = ", round(popt[2],2))
+#
+#     print("by hand:")
+#     print("amp = ", round(max(ylist),2))
+#     print("mean = ", round(np.mean(ylist),2))
+#     print("std = ", round(np.std(ylist),2))
+#
+#     plt.savefig('/home/time_user/TessC/fits_plots/Gauss_plot_stamp_%.2d.png' % int(f+11))
 
-def gaussian_func(x, amp , mean, std):
-    return amp*np.exp(-(x-mean)**2/(2*std**2))
-
-for f in range(5):
-    og_im = fits.open('/data/focus_sims/ciber_data/fits_files/subgrid_stamp_%.2d.FITS' % int(f+11))
-    image_hdus.append(og_im[0].data)
-    image_data_filt = gaussian_filter(og_im[0].data, 5)
-    result = np.where(image_data_filt == np.amax(image_data_filt)) #returns indices
-    x_data = image_data_filt[:,result[0]] #result[0] is the single y data point
-    ylist = [item for sublist in x_data for item in sublist] #flattens lists to one list
-    x_array = np.arange(len(x_data)) #numbers from 0 to 327
-
-    popt, pcov = curve_fit(gaussian_func, x_array, ylist, p0 = [max(ylist), np.mean(ylist), np.std(ylist)])
-
-    plt.figure()
-    plt.plot(x_array, ylist, 'go', markersize = 4, label = 'Image data')
-    plt.plot(x_array, gaussian_func(x_array, popt[0], popt[1], popt[2]), 'b', label='Best fit')
-    plt.legend()
-    # statistics.stdev(sample)
-    print("For subgrid_stamp_%.2d.png the Statistics are:" % int(f+11))
-
-    print("by curve_fit:")
-    print("amplitude = ", round(popt[0],2))
-    print("mean = ", round(popt[1],2))
-    print("std = ", round(popt[2],2))
-
-    print("by hand:")
-    print("amp = ", round(max(ylist),2))
-    print("mean = ", round(np.mean(ylist),2))
-    print("std = ", round(np.std(ylist),2))
-
-    plt.savefig('/home/time_user/TessC/fits_plots/Gauss_plot_stamp_%.2d.png' % int(f+11))
-
-    '''
-    Horizontal and vertical cut of data for a single blob image
-    '''
+'''
+Horizontal and vertical cut of data for a single blob image
+'''
 
 files = glob.glob('/data/focus_sims/ciber_data/fits_files')
 image_hdus = []
@@ -126,14 +126,23 @@ for f in range(5):
     h_popt, h_pcov = curve_fit(gaussian_func, x_array, xlist, p0 = [max(xlist), np.mean(xlist), np.std(xlist)])
     v_popt, v_pcov = curve_fit(gaussian_func, x_array, ylist, p0 = [max(ylist), np.mean(ylist), np.std(ylist)])
 
-    plt.figure()
-    plt.plot(x_array, xlist, 'bo', markersize = 4, label = 'Horizontal cut')
-    plt.plot(x_array, gaussian_func(x_array, h_popt[0], h_popt[1], h_popt[2]), 'r', label='Best fit - Horizontal')
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    fig.suptitle('H and V data cuts stamp_%.2d' % int(f+11))
 
-    plt.plot(x_array, ylist, 'mo', markersize = 4, label = 'Vertical cut')
-    plt.plot(x_array, gaussian_func(x_array, v_popt[0], v_popt[1], v_popt[2]), 'k', label='Best fit- Vertical')
-    plt.legend()
+    #plt.figure()
+    ax1.plot(x_array, xlist, 'bo', markersize = 4, label = 'Horizontal cut')
+    ax1.plot(x_array, gaussian_func(x_array, h_popt[0], h_popt[1], h_popt[2]), 'r', label='Best fit - Horizontal')
+    ax1.legend()
 
+    #plt.savefig('/home/time_user/TessC/fits_plots/Gauss_Horizontal_plot_stamp_%.2d.png' % int(f+11))
+
+    ax2.plot(x_array, ylist, 'mo', markersize = 4, label = 'Vertical cut')
+    ax2.plot(x_array, gaussian_func(x_array, v_popt[0], v_popt[1], v_popt[2]), 'k', label='Best fit- Vertical')
+    ax2.legend()
+
+    fig.tight_layout()
+
+    plt.savefig('/home/time_user/TessC/fits_plots/Gauss_VandH_plot_stamp_%.2d.png' % int(f+11))
 
     print("For subgrid_stamp_%.2d.png the Statistics for Horizontal cut are:" % int(f+11))
 
@@ -158,6 +167,3 @@ for f in range(5):
     print("amp = ", round(max(xlist),2))
     print("mean = ", round(np.mean(xlist),2))
     print("std = ", round(np.std(xlist),2))
-
-
-    plt.savefig('/home/time_user/TessC/fits_plots/Gauss_xandy_plot_stamp_%.2d.png' % int(f+11))
